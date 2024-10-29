@@ -81,3 +81,4 @@ body {background-color: #f3f1e5;}
 #preview h1, #preview h2, #preview h3, #preview h4, #preview h5, #preview h6 {
     font-weight: bold;
 }
+#preview a {color: unset;}
