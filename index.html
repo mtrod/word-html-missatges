@@ -40,18 +40,8 @@
                     <select class="ql-header">
                         <option value="1">Header 1</option>
                         <option value="2">Header 2</option>
-                        <option value="3">Header 3</option>
-                        <option value="4">Header 4</option>
-                        <option value="5">Header 5</option>
-                        <option value="6">Header 6</option>
                         <option value="">Normal</option>
                     </select>
-                    <button class="ql-link"></button>
-                    <button class="ql-align" value=""></button>
-                    <button class="ql-align" value="center"></button>
-                    <button class="ql-align" value="right"></button>
-                    <button class="ql-list" value="ordered"></button>
-                    <button class="ql-list" value="bullet"></button>
                     <select class="ql-color">
                         <option value="#000078">Blau UOC</option>
                         <option value="#73EDFF">Cian UOC</option>
@@ -60,16 +50,14 @@
                         <option value="#000000">Negre</option>
                         <option value="red">Vermell</option>
                     </select>
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                    <button class="ql-clean"></button>
+                    <button class="ql-link"></button>
+                    
                     <button class="ql-image"></button>
                         <button class="ql-image-url" title="URL imatge">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                                <path d="M12 12h0" />
-                                <path d="M8 12l-4 4 4 4" />
-                                <path d="M8 12l-4-4 4-4" />
-                                <path d="M16 12l4-4-4-4" />
-                                <path d="M16 12l4 4-4 4" />
-                            </svg>
+                            <svg width="14px" height="14px" viewBox="0 0 20 20"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-140.000000, -3839.000000)" fill="#000000"><g transform="translate(56.000000, 160.000000)"><path d="M93,3689 L90,3689 L90,3687 L93,3687 L93,3684 L95,3684 L95,3687 L98,3687 L98,3689 L95,3689 L95,3692 L93,3692 L93,3689 Z M86,3695 L102,3695 L102,3681 L86,3681 L86,3695 Z M84,3699 L104,3699 L104,3679 L84,3679 L84,3699 Z"></path></g></g></g></svg>
                         </button>
                     <a id="customLinkButton" class="btn btn-dark rounded-0 btn-sm btn-customlink">Campus</a>
                 </div>
@@ -134,10 +122,66 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+
+    const Block = Quill.import('blots/block');
+    // Class for custom styled H1 header
+    class HeaderWithStyle1 extends Block {
+        static create(value) {
+            let node = super.create();
+            //node.setAttribute('data-header', value); // Store header level
+            node.setAttribute('style', 'font-size:28px; line-height:26px;');
+            return node;
+        }
+
+        static formats(node) {
+            return node.getAttribute('data-header') || '1'; // Return header level
+        }
+    }
+
+    // Class for custom styled H2 header
+    class HeaderWithStyle2 extends Block {
+        static create(value) {
+            let node = super.create();
+            //node.setAttribute('data-header', value); // Store header level
+            node.setAttribute('style', 'font-size:26px; line-height:26px;');
+            return node;
+        }
+
+        static formats(node) {
+            return node.getAttribute('data-header') || '2'; // Return header level
+        }
+    }
+
+    // Register custom header styles
+    HeaderWithStyle1.blotName = 'headerWithStyle1'; // Use unique blot name for H1
+    HeaderWithStyle1.tagName = 'h1'; // Specify <h1> tag
+    Quill.register(HeaderWithStyle1, true);
+
+    HeaderWithStyle2.blotName = 'headerWithStyle2'; // Use unique blot name for H2
+    HeaderWithStyle2.tagName = 'h2'; // Specify <h2> tag
+    Quill.register(HeaderWithStyle2, true);
+
+    // Initialize Quill editor with toolbar
     const quill = new Quill('#editor', {
         theme: 'snow',
         modules: {
             toolbar: '#toolbar'
+        }
+    });
+
+    // Add header selection logic
+    quill.getModule('toolbar').addHandler('header', (value) => {
+        if (value === '1') {
+            quill.format('headerWithStyle1', '1'); // Apply custom H1 style
+        } else if (value === '2') {
+            quill.format('headerWithStyle2', '2'); // Apply custom H2 style
+        } else if (value === false) {
+            // Normal paragraph style, removing custom headers
+            quill.format('headerWithStyle1', false); // Remove custom H1 style
+            quill.format('headerWithStyle2', false); // Remove custom H2 style
+            quill.format('header', value); // Apply normal header style if applicable
+        } else {
+            quill.format('header', value); // Default behavior for other header levels
         }
     });
 
@@ -202,7 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <tr>
            <td align="left" valign="top">  
             <div width="100%" align="left" style="padding-bottom: 20px;">
+
 ${editorContent}
+
             </div>
            </td>
           </tr>
@@ -259,6 +305,7 @@ ${languageSnippets[lang]}
                         link.setAttribute('target', '_blank');
                         link.setAttribute('style', 'color:#000078');
                     });
+                    tempDiv.querySelectorAll
 
                     // Set the modified HTML to the Quill editor
                     quill.root.innerHTML = tempDiv.innerHTML;
@@ -503,14 +550,14 @@ ${languageSnippets[lang]}
             updateHtmlOutput(titleInput.value, lang);
         });
     });
-});
 
+    //PREVIEW
+    document.getElementById('previewButton').addEventListener('click', function() {
+        const htmlContent = document.getElementById('htmlOutput').value;
+        document.getElementById('preview').innerHTML = htmlContent;
+        document.getElementById('preview').classList.add('px-2', 'py-3', 'bg-white', 'border');
+    });
 
-//PREVIEW
-document.getElementById('previewButton').addEventListener('click', function() {
-    const htmlContent = document.getElementById('htmlOutput').value;
-    document.getElementById('preview').innerHTML = htmlContent;
-    document.getElementById('preview').classList.add('px-2', 'py-3', 'bg-white', 'border');
 });
 
 </script>
