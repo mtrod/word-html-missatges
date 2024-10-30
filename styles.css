@@ -22,7 +22,7 @@ body {background-color: #f3f1e5;}
     width: auto;
     margin:0 5px;
 }
-.btn-customlink::before {content: '🔗';}
+.btn-customlink::before {content: '🔗 ';}
 .autocomplete-list {
     z-index: 1000;
     cursor: pointer;
@@ -47,11 +47,11 @@ body {background-color: #f3f1e5;}
 }
 .autocomplete-item:hover {background: #38ff90;}
 #htmlOutput {
-    height: 366px; /* Set a fixed height for the HTML output */
+    height: 473px; 
     width: 100%;
-    resize: vertical; /* Allow vertical resizing */
+    resize: vertical; 
 }
-#editor {height: 347px;}
+#editor {height: 450px;}
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
