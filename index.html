@@ -50,7 +50,7 @@
                         <option value="#000000">Negre</option>
                         <option value="red">Vermell</option>
                     </select>
-                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="ordered" style="color: blue;"></button>
                     <button class="ql-list" value="bullet"></button>
                     <button class="ql-clean"></button>
                     <button class="ql-link"></button>
@@ -132,10 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
             node.setAttribute('style', 'font-size:28px; line-height:26px;');
             return node;
         }
-
-        static formats(node) {
+        /*static formats(node) {
             return node.getAttribute('data-header') || '1'; // Return header level
-        }
+        }*/
     }
 
     // Class for custom styled H2 header
@@ -146,11 +145,11 @@ document.addEventListener('DOMContentLoaded', () => {
             node.setAttribute('style', 'font-size:26px; line-height:26px;');
             return node;
         }
-
-        static formats(node) {
+        /*static formats(node) {
             return node.getAttribute('data-header') || '2'; // Return header level
-        }
+        }*/
     }
+
 
     // Register custom header styles
     HeaderWithStyle1.blotName = 'headerWithStyle1'; // Use unique blot name for H1
@@ -160,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
     HeaderWithStyle2.blotName = 'headerWithStyle2'; // Use unique blot name for H2
     HeaderWithStyle2.tagName = 'h2'; // Specify <h2> tag
     Quill.register(HeaderWithStyle2, true);
+
 
     // Initialize Quill editor with toolbar
     const quill = new Quill('#editor', {
@@ -184,6 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
             quill.format('header', value); // Default behavior for other header levels
         }
     });
+
 
     // Handler for inserting image via URL
     document.querySelector('.ql-image-url').addEventListener('click', () => {
@@ -306,7 +307,23 @@ ${languageSnippets[lang]}
                         link.setAttribute('target', '_blank');
                         link.setAttribute('style', 'color:#000078');
                     });
-                    tempDiv.querySelectorAll
+
+                    // Apply custom styles to <ul> and <ol> lists
+                    tempDiv.querySelectorAll('ul').forEach(ul => {
+                        ul.setAttribute('style', 'padding-left:15px; line-height: 150%;');
+                    });
+                    tempDiv.querySelectorAll('ol').forEach(ol => {
+                        ol.setAttribute('style', 'padding-left:15px; line-height: 150%;');
+                    });
+
+                    // Style H1 elements
+                    tempDiv.querySelectorAll('h1').forEach(h1 => {
+                        h1.setAttribute('style', 'font-size: 28px; line-height: 26px;');
+                    });
+                    // Style H2 elements
+                    tempDiv.querySelectorAll('h2').forEach(h2 => {
+                        h2.setAttribute('style', 'font-size: 26px; line-height: 26px;');
+                    });
 
                     // Set the modified HTML to the Quill editor
                     quill.root.innerHTML = tempDiv.innerHTML;
