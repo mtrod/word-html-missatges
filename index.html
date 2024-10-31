@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<div class="container-fluid mb-4" style="background: #38ff90;border-bottom: 1px solid black;"><div class="container"><h6 class="pb-2 pt-3 font-monospace fw-bold">Conversor Word-a-HTML</h6></div>
+<div class="container-fluid mb-4 border-bottom border-black" style="background: #38ff90;"><div class="container"><h6 class="pb-2 pt-3 font-monospace fw-bold">Conversor Word-a-HTML</h6></div>
     
 </div>
 <div class="container">
@@ -111,6 +111,7 @@
 
             <button id="copyCodeBtn" class="btn btn-dark font-monospace btn-sm mt-3 rounded-0 px-2">Copia HTML</button>
             <button id="previewButton" class="btn btn-dark font-monospace btn-sm mt-3 rounded-0 px-2">Vista prèvia</button>
+            <button onclick="location.reload(true);" class="btn btn-dark font-monospace btn-sm mt-3 rounded-0 px-2">Neteja</button>
         </div>
     </div>
     
@@ -333,7 +334,6 @@ ${languageSnippets[lang]}
         };
         reader.readAsArrayBuffer(event.target.files[0]);
     });
-
 
     titleInput.addEventListener('input', () => {
         updateHtmlOutput(titleInput.value, getSelectedLanguage());
