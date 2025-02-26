@@ -92,7 +92,7 @@
             <textarea id="htmlOutput" class="font-monospace p-2 border rounded-0" placeholder="Sortida HTML editable..." spellcheck="false"></textarea>
             
             <div class="px-2 pt-2 mt-2 font-monospace bg-white border">
-                <label for="footerSelect" class="form-label fw-bold">Idioma del peu</label>
+                <label for="footerSelect" class="form-label fw-bold">Idioma:</label>
                 <div id="languageSelection" class="form-check form-check-inline">
                     <div class="form-check form-check-inline">
                         <input class="form-check-input border" type="radio" name="language" value="ca" checked>
@@ -105,6 +105,10 @@
                     <div class="form-check form-check-inline">
                         <input class="form-check-input border"  type="radio" name="language" value="en">
                         <label class="form-check-label">Anglès</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input border"  type="radio" name="language" value="no">
+                        <label class="form-check-label">Cap</label>
                     </div>
                 </div>
             </div>
@@ -205,8 +209,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const languageSnippets = {
                 ca: `La bústia del Servei d'Informació és només emissora de missatges. En el cas que tinguis qualsevol dubte, tens a la teva disposició el <em>Servei d'atenció</em> del Campus Virtual.<br>En aquests moments, reps les comunicacions en català. Si vols, pots canviar-ho en qualsevol moment des del teu <em><a style="color: #000078; text-decoration: underline;" href="https://campus.uoc.edu/webapps/cas/login?service=https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm=https://campus.uoc.edu/estudiant/espai-personal/ca/index.html" target="_blank">Espai personal / Informació personal / Canvi d'idioma dels missatges</a>.`,
                 es: `El buzón Servicio de información de la UOC es solo emisor de mensajes. Si tienes cualquier duda, el <em>Servicio de atención</em> del Campus Virtual está a tu disposición. <br>En estos momentos recibes las comunicaciones en español. Si quieres, puedes cambiarlo en cualquier momento desde tu <em><a style="color: #000078; text-decoration: underline;" href="https://campus.uoc.edu/webapps/cas/login?service=https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm=https://campus.uoc.edu/estudiant/espai-personal/es/index.html" target="_blank">Espacio personal / Información personal / Cambio de idioma de los mensajes</a></em>.`,
-                en: `The Information Service email address is only used to send out messages. Should you have any doubts, please consult the Help Service on the Virtual Campus. <br />You are currently receiving messages in English. You can change this whenever you want in your <em><a style="color: #000078; text-decoration: underline;" href="https://campus.uoc.edu/webapps/cas/login?service=https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm=https://campus.uoc.edu/estudiant/espai-personal/en/index.html" target="_blank">Personal area / Personal information / Change the language for messages</a></em> section.`
+                en: `The Information Service email address is only used to send out messages. Should you have any doubts, please consult the Help Service on the Virtual Campus. <br />You are currently receiving messages in English. You can change this whenever you want in your <em><a style="color: #000078; text-decoration: underline;" href="https://campus.uoc.edu/webapps/cas/login?service=https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm=https://campus.uoc.edu/estudiant/espai-personal/en/index.html" target="_blank">Personal area / Personal information / Change the language for messages</a></em> section.`,
+                no: ``
             };
+
+        if (lang == 'no' ) {
+            htmlOutput.value = `${editorContent}`;
+        } else {
 
         htmlOutput.value = `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="${lang}">
@@ -285,6 +294,7 @@ ${languageSnippets[lang]}
  </body>
 </html>`;
     }
+}
 
     function getSelectedLanguage() {
         return document.querySelector('input[name="language"]:checked')?.value || 'ca';
