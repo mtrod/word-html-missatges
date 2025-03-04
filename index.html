@@ -264,7 +264,7 @@
 
       // Helper: Beautify HTML content
       function beautifyEditorContent(html) {
-        return html.replace(/>\s*</g, '>\n<');
+        return html.replace(/>\s*<(?!\/)(?!(?:a|em|i|b|strong|br)\b)/g, '>\n<');
       }
 
       // Helper: Get service text based on language
