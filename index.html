@@ -1,594 +1,577 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <link rel="icon" type="image/png" href="assets/img/favicon.png">
-    <title>Word-a-HTML</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
-    <link rel="stylesheet" href="styles.css"> 
-    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.4.2/mammoth.browser.min.js"></script>
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <title>Word-a-HTML</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.4.2/mammoth.browser.min.js"></script>
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <!-- External files -->
+  <script src="assets/js/finalHtmlTemplate.js"></script>
+  <script src="assets/js/urls.js"></script>
+  <style></style>
 </head>
 <body>
-
-<div class="container-fluid mb-4 border-bottom border-black" style="background: #38ff90;"><div class="container"><h6 class="pb-2 pt-3 font-monospace fw-bold">Conversor Word-a-HTML</h6></div>
-    
-</div>
-<div class="container">
+  <div class="container-fluid mb-4 border-bottom border-black" style="background: #38ff90;">
+    <div class="container">
+      <h6 class="pb-2 pt-3 font-monospace fw-bold">Conversor Word-a-HTML</h6>
+    </div>
+  </div>
+  <div class="container">
+    <!-- File input and title -->
     <div class="row mb-4">
-        <div class="col">
-            <input class="form-control rounded-0 border font-monospace" type="file" id="fileInput" accept=".doc,.docx">
-        </div>
-
-        <div class="col">
-            <input class="form-control rounded-0 border font-monospace" type="text" id="titleInput" placeholder="Títol del missatge">
-        </div>
+      <div class="col">
+        <input class="form-control rounded-0 border font-monospace" type="file" id="fileInput" accept=".doc,.docx">
+      </div>
+      <div class="col">
+        <input class="form-control rounded-0 border font-monospace" type="text" id="titleInput" placeholder="Títol del missatge">
+      </div>
     </div>
-    
+    <!-- Editor and toolbar -->
     <div class="row mb-3">
-        <div class="col">
-            <label for="editor" class="form-label fw-bold font-monospace">Previsualització</label>
-            <div class="preview-editor p-2 bg-white border">
-                <div id="toolbar" class="border mb-2">
-                    <button class="ql-bold"></button>
-                    <button class="ql-italic"></button>
-                    <button class="ql-underline"></button>
-                    <select class="ql-header">
-                        <option value="1">Header 1</option>
-                        <option value="2">Header 2</option>
-                        <option value="">Normal</option>
-                    </select>
-                    <select class="ql-color">
-                        <option value="#000078">Blau UOC</option>
-                        <option value="#73EDFF">Cian UOC</option>
-                        <option value="#D5FAFF">Cian clar</option>
-                        <option value="#ffffff">Blanc</option>
-                        <option value="#000000">Negre</option>
-                        <option value="red">Vermell</option>
-                    </select>
-                    <button class="ql-list" value="ordered" style="color: blue;"></button>
-                    <button class="ql-list" value="bullet"></button>
-                    <button class="ql-clean"></button>
-                    <button class="ql-link"></button>
-                    
-                    <button class="ql-image"></button>
-                        <button class="ql-image-url" title="URL imatge">
-                            <svg width="14px" height="14px" viewBox="0 0 20 20"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-140.000000, -3839.000000)" fill="#000000"><g transform="translate(56.000000, 160.000000)"><path d="M93,3689 L90,3689 L90,3687 L93,3687 L93,3684 L95,3684 L95,3687 L98,3687 L98,3689 L95,3689 L95,3692 L93,3692 L93,3689 Z M86,3695 L102,3695 L102,3681 L86,3681 L86,3695 Z M84,3699 L104,3699 L104,3679 L84,3679 L84,3699 Z"></path></g></g></g></svg>
-                        </button>
-                    <a id="customLinkButton" class="btn btn-dark rounded-0 btn-sm btn-customlink">Campus</a>
-                </div>
-
-                    <!-- Modal Structure -->
-                    <div id="urlModal" class="modal">
-                        <div class="modal-content rounded-0 border font-monospace">
-                            <span class="close-button">&times;</span>
-                            <input class="form-control border rounded-0" type="text" id="urlInput" placeholder="https://">
-                            <div class="autocomplete-list" id="autocompleteList"></div>
-
-                            <div class="form-check">
-                                <input class="form-check-input border" type="checkbox" type="checkbox" id="prependCheckbox"> 
-                                <label class="form-check-label" for="prependCheckbox">Login CAS</label>
-                            </div>
-
-                            <div class="form-check">
-                                <input class="form-check-input border" type="checkbox" type="checkbox" type="checkbox" id="secondPrependCheckbox">
-                                <label class="form-check-label" for="secondPrependCheckbox">Capçalera UOC</label>
-                            </div>
-
-                            <button id="insertLinkBtn" class="btn btn-dark font-monospace btn-sm mt-3 rounded-0">Inserir link</button>
-                        </div>
-                    </div>
-                
-                <div id="editor" class="bg-white border p-2" spellcheck="false"></div>
+      <div class="col">
+        <label for="editor" class="form-label fw-bold font-monospace">Previsualització</label>
+        <div class="preview-editor p-2 bg-white border">
+          <div id="toolbar" class="border mb-2">
+            <!-- Standard Quill buttons -->
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+            <!--<button class="ql-underline"></button>-->
+            <select class="ql-header">
+              <option value="1">Header 1</option>
+              <option value="2">Header 2</option>
+              <option value="">Normal</option>
+            </select>
+            <select class="ql-color">
+              <option value="#000078">Blau UOC</option>
+              <option value="#73EDFF">Cian UOC</option>
+              <option value="#D5FAFF">Cian clar</option>
+              <option value="#ffffff">Blanc</option>
+              <option value="#000000">Negre</option>
+              <option value="red">Vermell</option>
+            </select>
+            <button class="ql-list" value="ordered" style="color: blue;"></button>
+            <button class="ql-list" value="bullet"></button>
+            <button class="ql-clean"></button>
+            <button class="ql-link"></button>
+            <button class="ql-image-url" title="URL imatge">
+              <svg viewBox="0 0 18 18">
+                <rect class="ql-stroke" height="10" width="12" x="3" y="4"></rect>
+                <circle class="ql-fill" cx="6" cy="7" r="1"></circle>
+                <polyline class="ql-even ql-fill" points="5 12 5 11 7 9 8 10 11 7 13 9 13 12 5 12"></polyline>
+              </svg>
+            </button>
+            <button id="youtubeButton" title="Youtube">
+              <svg viewBox="0 0 18 18">
+                <rect class="ql-stroke" height="12" width="12" x="3" y="3"></rect>
+                <rect class="ql-fill" height="12" width="1" x="5" y="3"></rect>
+                <rect class="ql-fill" height="12" width="1" x="12" y="3"></rect>
+                <rect class="ql-fill" height="2" width="8" x="5" y="8"></rect>
+              </svg>
+            </button>
+            <button id="customCodeButton" style="width: 34px;cursor: pointer;" title="Botó">
+              <svg viewBox="-3 0 24 18" style="background: #444;border: 2px solid white;"><polyline class="ql-stroke" style="stroke:#fff;" points="5.5 13 9 5 12.5 13"></polyline><line class="ql-stroke" x1="11.63" x2="6.38" y1="11" y2="11" style="stroke:#fff;"></line></svg>
+            </button>
+            <a id="customLinkButton" class="btn btn-dark rounded-0 btn-sm btn-customlink">Campus</a>
+            <div class="dropdown ql-picker">
+              <a class="btn btn-sm text-dark rounded-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Paràmetres</a>
+              <ul class="dropdown-menu shadow-sm">
+                <li><a class="dropdown-item small text-dark" href="#" data-text="[TERCERSNOMBRESINAPELLIDOS]">TERCERSNOMBRESINAPELLIDOS</a></li>
+                <li><a class="dropdown-item small text-dark" href="#" data-text="[PARAMETROUNODEST]">PARAMETROUNODEST</a></li>
+                <li><a class="dropdown-item small text-dark" href="#" data-text="[PARAMETRODOSDEST]">PARAMETRODOSDEST</a></li>
+                <li><a class="dropdown-item small text-dark" href="#" data-text="[PARAMETROTRESDEST]">PARAMETROTRESDEST</a></li>
+              </ul>
             </div>
-        </div>
-        
-        <div class="col">
-            <label for="htmlOutput" class="form-label fw-bold font-monospace">HTML</label>
-            <textarea id="htmlOutput" class="font-monospace p-2 border rounded-0" placeholder="Sortida HTML editable..." spellcheck="false"></textarea>
-            
-            <div class="px-2 pt-2 mt-2 font-monospace bg-white border">
-                <label for="footerSelect" class="form-label fw-bold">Idioma:</label>
-                <div id="languageSelection" class="form-check form-check-inline">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input border" type="radio" name="language" value="ca" checked>
-                        <label class="form-check-label">Català</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input border" type="radio" name="language" value="es">
-                        <label class="form-check-label">Espanyol</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input border"  type="radio" name="language" value="en">
-                        <label class="form-check-label">Anglès</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input border"  type="radio" name="language" value="no">
-                        <label class="form-check-label">Cap</label>
-                    </div>
-                </div>
+          </div>
+          <!-- Campus Link Modal -->
+          <div id="urlModal" class="modal">
+            <div class="modal-content rounded-0 border font-monospace">
+              <span class="close-button">&times;</span>
+              <input class="form-control border rounded-0" type="text" id="urlInput" placeholder="https://">
+              <div class="autocomplete-list" id="autocompleteList"></div>
+              <div class="form-check">
+                <input class="form-check-input border" type="checkbox" id="prependCheckbox"> 
+                <label class="form-check-label" for="prependCheckbox">Login CAS</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input border" type="checkbox" id="secondPrependCheckbox">
+                <label class="form-check-label" for="secondPrependCheckbox">Capçalera UOC</label>
+              </div>
+              <button id="insertLinkBtn" class="btn btn-dark font-monospace btn-sm mt-3 rounded-0">Inserir link</button>
             </div>
-
-            <button id="copyCodeBtn" class="btn btn-dark font-monospace btn-sm mt-3 rounded-0 px-2">Copia HTML</button>
-            <button id="previewButton" class="btn btn-dark font-monospace btn-sm mt-3 rounded-0 px-2">Vista prèvia</button>
-            <button onclick="location.reload(true);" class="btn btn-dark font-monospace btn-sm mt-3 rounded-0 px-2">Neteja</button>
+          </div>
+          <!-- Custom Code Modal -->
+          <div id="codeModal" class="modal">
+            <div class="modal-content rounded-0 border font-monospace">
+              <span class="close-button" id="codeCloseButton">&times;</span>
+              <input class="form-control border rounded-0 mb-2" type="text" id="codeTextInput" placeholder="Literal del botó">
+              <input class="form-control border rounded-0 mb-2" type="text" id="codeUrlInput" placeholder="Enllaç">
+              <div class="autocomplete-list" id="codeAutocompleteList"></div>
+              <div class="form-check">
+                <input class="form-check-input border" type="checkbox" id="codePrependCheckbox"> 
+                <label class="form-check-label" for="codePrependCheckbox">Login CAS</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input border" type="checkbox" id="codeSecondPrependCheckbox">
+                <label class="form-check-label" for="codeSecondPrependCheckbox">Capçalera UOC</label>
+              </div>
+              <button id="insertCodeBtn" class="btn btn-dark font-monospace btn-sm mt-3 rounded-0">Inserir botó</button>
+            </div>
+          </div>
+          <div id="editor" class="bg-white border p-2" spellcheck="false"></div>
         </div>
+      </div>
+      <div class="col">
+        <!-- Existing Idioma group -->
+        <label for="htmlOutput" class="form-label fw-bold font-monospace">HTML</label>
+        <textarea id="htmlOutput" class="font-monospace p-2 border rounded-0" placeholder="Sortida HTML editable..." spellcheck="false"></textarea>
+        <div class="px-2 pt-2 mt-2 font-monospace bg-white border">
+          <label class="form-label fw-bold">Bústia:</label>
+          <div id="serviceSelection" class="form-check form-check-inline">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input border" type="radio" name="service" value="informacio" checked>
+              <label class="form-check-label">Servei d'informació</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input border" type="radio" name="service" value="pdc">
+              <label class="form-check-label">Suport Docència</label>
+            </div>
+          </div><br>
+          <label class="form-label fw-bold">Idioma:</label>
+          <div id="languageSelection" class="form-check form-check-inline">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input border" type="radio" name="language" value="ca" checked>
+              <label class="form-check-label">Català</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input border" type="radio" name="language" value="es">
+              <label class="form-check-label">Espanyol</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input border" type="radio" name="language" value="en">
+              <label class="form-check-label">Anglès</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input border" type="radio" name="language" value="no">
+              <label class="form-check-label">Cap</label>
+            </div>
+          </div>
+        </div>
+        <button id="copyCodeBtn" class="btn btn-dark font-monospace btn-sm mt-3 rounded-0 px-2">Copia HTML</button>
+        <button id="previewButton" class="btn btn-dark font-monospace btn-sm mt-3 rounded-0 px-2">Vista prèvia</button>
+        <button onclick="location.reload(true);" class="btn btn-dark font-monospace btn-sm mt-3 rounded-0 px-2">Neteja</button>
+      </div>
     </div>
-    
     <div class="row mt-5 mb-3">
-        <div id="preview"></div>
+      <div id="preview"></div>
     </div>
+  </div>
+  <!-- Bootstrap 5.3.3 JS bundle (required for dropdown) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Override Quill's default Link format to include underline and blue color
+      const Link = Quill.import('formats/link');
+      const oldCreate = Link.create;
+      Link.create = function(value) {
+        let node = oldCreate.call(this, value);
+        node.setAttribute('target', '_blank'); // open in a new tab
+        node.style.textDecoration = 'underline';
+        node.style.color = '#000078';
+        return node;
+      };
+      Quill.register(Link, true);
 
-</div>
+      // Global storage for custom code snippets (2-field modal) and YouTube snippets
+      let customCodeSnippets = {};
+      let customCodeCounter = 0;
+      let youtubeSnippets = {};
+      let youtubeCounter = 0;
+      let codeSavedRange = null;
+      let savedRange = null;
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-
-    const Block = Quill.import('blots/block');
-    // Class for custom styled H1 header
-    class HeaderWithStyle1 extends Block {
+      // Register custom embed blot for custom code snippets
+      const BlockEmbed = Quill.import('blots/block/embed');
+      class CustomSnippetBlot extends BlockEmbed {
         static create(value) {
-            let node = super.create();
-            //node.setAttribute('data-header', value); // Store header level
-            node.setAttribute('style', 'font-size:28px; line-height:26px;');
-            return node;
+          let node = super.create();
+          node.setAttribute('data-marker', value.marker);
+          node.classList.add('placeholder-boto');
+          node.innerText = value.displayText;
+          return node;
         }
-        /*static formats(node) {
-            return node.getAttribute('data-header') || '1'; // Return header level
-        }*/
-    }
+        static value(node) {
+          return {
+            marker: node.getAttribute('data-marker'),
+            displayText: node.innerText
+          };
+        }
+      }
+      CustomSnippetBlot.blotName = 'customSnippet';
+      CustomSnippetBlot.tagName = 'div';
+      Quill.register(CustomSnippetBlot);
 
-    // Class for custom styled H2 header
-    class HeaderWithStyle2 extends Block {
+      // Register custom embed blot for YouTube snippets
+      class YouTubeSnippetBlot extends BlockEmbed {
         static create(value) {
-            let node = super.create();
-            //node.setAttribute('data-header', value); // Store header level
-            node.setAttribute('style', 'font-size:26px; line-height:26px;');
-            return node;
+          let node = super.create();
+          node.setAttribute('data-marker', value.marker);
+          node.classList.add('placeholder-youtube');
+          node.innerText = value.displayText;
+          return node;
         }
-        /*static formats(node) {
-            return node.getAttribute('data-header') || '2'; // Return header level
-        }*/
-    }
+        static value(node) {
+          return {
+            marker: node.getAttribute('data-marker'),
+            displayText: node.innerText
+          };
+        }
+      }
+      YouTubeSnippetBlot.blotName = 'youtubeSnippet';
+      YouTubeSnippetBlot.tagName = 'div';
+      Quill.register(YouTubeSnippetBlot);
 
-
-    // Register custom header styles
-    HeaderWithStyle1.blotName = 'headerWithStyle1'; // Use unique blot name for H1
-    HeaderWithStyle1.tagName = 'h1'; // Specify <h1> tag
-    Quill.register(HeaderWithStyle1, true);
-
-    HeaderWithStyle2.blotName = 'headerWithStyle2'; // Use unique blot name for H2
-    HeaderWithStyle2.tagName = 'h2'; // Specify <h2> tag
-    Quill.register(HeaderWithStyle2, true);
-
-
-    // Initialize Quill editor with toolbar
-    const quill = new Quill('#editor', {
+      // Initialize Quill editor
+      const quill = new Quill('#editor', {
         theme: 'snow',
-        modules: {
-            toolbar: '#toolbar'
-        }
-    });
+        modules: { toolbar: '#toolbar' }
+      });
 
-    // Add header selection logic
-    quill.getModule('toolbar').addHandler('header', (value) => {
-        if (value === '1') {
-            quill.format('headerWithStyle1', '1'); // Apply custom H1 style
-        } else if (value === '2') {
-            quill.format('headerWithStyle2', '2'); // Apply custom H2 style
-        } else if (value === false) {
-            // Normal paragraph style, removing custom headers
-            quill.format('headerWithStyle1', false); // Remove custom H1 style
-            quill.format('headerWithStyle2', false); // Remove custom H2 style
-            quill.format('header', value); // Apply normal header style if applicable
-        } else {
-            quill.format('header', value); // Default behavior for other header levels
-        }
-    });
+      // Dropdown items for inserting parameters
+      document.querySelectorAll('.dropdown-item[data-text]').forEach(item => {
+        item.addEventListener('click', event => {
+          event.preventDefault();
+          const textToInsert = item.getAttribute('data-text');
+          const range = quill.getSelection(true);
+          quill.insertText(range.index, textToInsert);
+          quill.setSelection(range.index + textToInsert.length);
+        });
+      });
 
-
-    // Handler for inserting image via URL
-    document.querySelector('.ql-image-url').addEventListener('click', () => {
+      // Insert image via URL
+      document.querySelector('.ql-image-url').addEventListener('click', () => {
         const url = prompt('URL imatge:');
         if (url) {
-            const range = quill.getSelection();
-            quill.insertEmbed(range.index, 'image', url);
+          const range = quill.getSelection();
+          quill.insertEmbed(range.index, 'image', url);
         }
-    });
+      });
 
-    const titleInput = document.getElementById('titleInput');
-    const htmlOutput = document.getElementById('htmlOutput');
-    let savedRange = null; // Variable to store the selection range
+      // Helper: Beautify HTML content
+      function beautifyEditorContent(html) {
+        return html.replace(/>\s*</g, '>\n<');
+      }
 
-    function updateHtmlOutput(title, lang) {
-        const editorContent = quill.root.innerHTML;
-        const languageSnippets = {
-                ca: `La bústia del Servei d'Informació és només emissora de missatges. En el cas que tinguis qualsevol dubte, tens a la teva disposició el <em>Servei d'atenció</em> del Campus Virtual.<br>En aquests moments, reps les comunicacions en català. Si vols, pots canviar-ho en qualsevol moment des del teu <em><a style="color: #000078; text-decoration: underline;" href="https://campus.uoc.edu/webapps/cas/login?service=https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm=https://campus.uoc.edu/estudiant/espai-personal/ca/index.html" target="_blank">Espai personal / Informació personal / Canvi d'idioma dels missatges</a>.`,
-                es: `El buzón Servicio de información de la UOC es solo emisor de mensajes. Si tienes cualquier duda, el <em>Servicio de atención</em> del Campus Virtual está a tu disposición. <br>En estos momentos recibes las comunicaciones en español. Si quieres, puedes cambiarlo en cualquier momento desde tu <em><a style="color: #000078; text-decoration: underline;" href="https://campus.uoc.edu/webapps/cas/login?service=https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm=https://campus.uoc.edu/estudiant/espai-personal/es/index.html" target="_blank">Espacio personal / Información personal / Cambio de idioma de los mensajes</a></em>.`,
-                en: `The Information Service email address is only used to send out messages. Should you have any doubts, please consult the Help Service on the Virtual Campus. <br />You are currently receiving messages in English. You can change this whenever you want in your <em><a style="color: #000078; text-decoration: underline;" href="https://campus.uoc.edu/webapps/cas/login?service=https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm=https://campus.uoc.edu/estudiant/espai-personal/en/index.html" target="_blank">Personal area / Personal information / Change the language for messages</a></em> section.`,
-                no: ``
-            };
-
-        if (lang == 'no' ) {
-            htmlOutput.value = `${editorContent}`;
+      // Helper: Get service text based on language
+      function getServiceText(lang) {
+        const service = document.querySelector('input[name="service"]:checked')?.value || 'informacio';
+        if (lang === 'ca') {
+          return service === 'informacio' ? "del Servei d'informació" : "de Suport Docència";
+        } else if (lang === 'es') {
+          return service === 'informacio' ? "del Servicio de información" : "de Apoyo Docente";
+        } else if (lang === 'en') {
+          return service === 'informacio' ? "Information Service" : "Teaching Support";
         } else {
+          return "";
+        }
+      }
 
-        htmlOutput.value = `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="${lang}">
- <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
- </head>
- <body>
-  <div style="width: 100% !important; max-width: 600px !important; margin: auto;">
-   <table border="0" cellpadding="10" cellspacing="0" width="100%" class="contenidor">
-    <tr>
-     <td align="center" valign="top">
-      <table border="0" cellpadding="0" cellspacing="0" width="100%" class="contingut">
-       <tr>
-        <td align="center" valign="top"></td>
-       </tr>
-       <tr>
-        <td align="center" valign="top">
-         <div class="block">
-          <table width="100%" bgcolor="#ffffff" cellpadding="0" cellspacing="0" border="0" id="backgroundTable" st-sortable="header" style="min-width:350px">
-           <tbody>
-            <tr>
-             <td colspan="3" align="right">
-              <div style="height:70px; padding-right:5px; padding-bottom:15px; background-image:url(https://campus.uoc.edu/estudiant/_resources/img/mail/logoUOC_cap_mail.png); background-repeat:no-repeat;">
-               <p style="color:#000075; font-size:20px; font-family: Arial, Geneva, sans-serif; line-height:22px; padding-top:10px; margin-top:0px; margin-bottom:0px; margin-left:203px; text-align:left;">
-                <strong>${title}</strong><br />
-                <strong> </strong>
-               </p>
-              </div>
-             </td>
-            </tr>
-           </tbody>
-          </table> 
-         </div>
-        </td>
-       </tr>
-       <tr>
-        <td valign="top">
-         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="color: #000078; font-family: Arial, sans-serif; font-size: 16px; line-height: 145%; margin-top: 30px;">
-          <tr>
-           <td align="left" valign="top">  
-            <div width="100%" align="left" style="padding-bottom: 20px;">
+      // Modified updateHtmlOutput to replace custom snippet and YouTube snippet placeholders
+      function updateHtmlOutput(title, lang) {
+        let editorContent = quill.root.innerHTML;
+        const tempContainer = document.createElement('div');
+        tempContainer.innerHTML = editorContent;
+        // Replace custom code snippet placeholders
+        tempContainer.querySelectorAll('.placeholder-boto').forEach(el => {
+          const marker = el.getAttribute('data-marker');
+          const snippet = customCodeSnippets[marker];
+          if (snippet) {
+            el.outerHTML = snippet;
+          }
+        });
+        // Replace YouTube snippet placeholders
+        tempContainer.querySelectorAll('.placeholder-youtube').forEach(el => {
+          const marker = el.getAttribute('data-marker');
+          const snippet = youtubeSnippets[marker];
+          if (snippet) {
+            el.outerHTML = snippet;
+          }
+        });
+        const beautifiedContent = beautifyEditorContent(tempContainer.innerHTML);
+        const serviceText = getServiceText(lang);
+        const languageSnippets = {
+          ca: `La bústia ${serviceText} és només emissora de missatges. En el cas que tinguis qualsevol dubte, tens a la teva disposició el <em>Servei d'atenció</em> del Campus Virtual.<br>En aquests moments, reps les comunicacions en català. Si vols, pots canviar-ho en qualsevol moment des del teu <em><a style="color: #000078; text-decoration: underline;" href="https://campus.uoc.edu/webapps/cas/login?service=https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm=https://campus.uoc.edu/estudiant/espai-personal/ca/index.html" target="_blank">Espai personal / Informació personal / Canvi d'idioma dels missatges</a></em>.`,
+          es: `El buzón ${serviceText} es solo emisor de mensajes. Si tienes cualquier duda, el <em>Servicio de atención</em> del Campus Virtual está a tu disposición.<br>En estos moments recibes las comunicaciones en español. Si quieres, puedes cambiarlo en cualquier momento desde tu <em><a style="color: #000078; text-decoration: underline;" href="https://campus.uoc.edu/webapps/cas/login?service=https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm=https://campus.uoc.edu/estudiant/espai-personal/es/index.html" target="_blank">Espacio personal / Información personal / Cambio de idioma de los mensajes</a></em>.`,
+          en: `The ${serviceText} email address is used only to send out messages. Should you have any doubts, please consult the Help Service on the Virtual Campus.<br>You are currently receiving messages in English. You can change this whenever you want in your <em><a style="color: #000078; text-decoration: underline;" href="https://campus.uoc.edu/webapps/cas/login?service=https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm=https://campus.uoc.edu/estudiant/espai-personal/en/index.html" target="_blank">Personal area / Personal information / Change the language for messages</a></em> section.`,
+          no: ``
+        };
+        if (lang === 'no') {
+          htmlOutput.value = beautifiedContent;
+        } else {
+          htmlOutput.value = getFinalHtmlTemplate(title, lang, beautifiedContent, languageSnippets);
+        }
+      }
 
-${editorContent}
-
-            </div>
-           </td>
-          </tr>
-          <tr>
-           <td valign="top"></td>
-          </tr>
-         </table>
-        </td>
-       </tr>
-       <tr>
-        <td align="center" valign="top">
-         <table width="100%" border="0" cellspacing="0" cellpadding="0">
-          <tbody>
-           <tr>
-            <td valign="top" height="18" align="center" style="background-color: #f0f0f0; background-image: url('https://campus.uoc.edu/UOC/a/img/mail/servei_informacio/blau_mari_4.gif'); background-repeat: repeat-x; ">&nbsp;</td>
-           </tr>
-           <tr>
-            <td valign="top" align="left" style="line-height: 165%; font-family: Arial, sans-serif; color: #000078; font-size: 14px; padding-left: 20px; padding-right: 20px; padding-bottom: 20px; background-color: #f0f0f0">
-${languageSnippets[lang]}
-            </td>
-           </tr>
-          </tbody>
-         </table>
-        </td>
-       </tr>
-      </table>
-     </td>
-    </tr>
-   </table>
-  </div>
-  <img src="https://queue.simpleanalyticscdn.com/noscript.gif?timezone=Europe%2FAmsterdam&unique=false&hostname=cv.uoc.edu&path=&utm_campaign=&utm_content=[OBTENERPARAMETROUNODEST]&utm_medium=notificador&https=true" referrerpolicy="no-referrer-when-downgrade" alt="" />
- </body>
-</html>`;
-    }
-}
-
-    function getSelectedLanguage() {
+      function getSelectedLanguage() {
         return document.querySelector('input[name="language"]:checked')?.value || 'ca';
-    }
+      }
 
-    quill.on('text-change', () => {
+      const titleInput = document.getElementById('titleInput');
+      const htmlOutput = document.getElementById('htmlOutput');
+
+      quill.on('text-change', () => {
         updateHtmlOutput(titleInput.value, getSelectedLanguage());
-    });
+      });
 
-    document.getElementById('fileInput').addEventListener('change', (event) => {
+      document.getElementById('fileInput').addEventListener('change', (event) => {
         const reader = new FileReader();
         reader.onload = (e) => {
-            mammoth.convertToHtml({ arrayBuffer: e.target.result })
-                .then(result => {
-                    // Create a temporary element to manipulate the HTML
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = result.value;
-
-                    // Find all links and set target="_blank"
-                    tempDiv.querySelectorAll('a').forEach(link => {
-                        link.setAttribute('target', '_blank');
-                        link.setAttribute('style', 'color:#000078');
-                    });
-
-                    // Apply custom styles to <ul> and <ol> lists
-                    tempDiv.querySelectorAll('ul').forEach(ul => {
-                        ul.setAttribute('style', 'padding-left:15px; line-height: 150%;');
-                    });
-                    tempDiv.querySelectorAll('ol').forEach(ol => {
-                        ol.setAttribute('style', 'padding-left:15px; line-height: 150%;');
-                    });
-
-                    // Style H1 elements
-                    tempDiv.querySelectorAll('h1').forEach(h1 => {
-                        h1.setAttribute('style', 'font-size: 28px; line-height: 26px;');
-                    });
-                    // Style H2 elements
-                    tempDiv.querySelectorAll('h2').forEach(h2 => {
-                        h2.setAttribute('style', 'font-size: 26px; line-height: 26px;');
-                    });
-
-                    // Set the modified HTML to the Quill editor
-                    quill.root.innerHTML = tempDiv.innerHTML;
-                    updateHtmlOutput(titleInput.value, 'ca');
-                })
-                .catch(console.error);
+          mammoth.convertToHtml({ arrayBuffer: e.target.result })
+            .then(result => {
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = result.value;
+              tempDiv.querySelectorAll('a').forEach(link => {
+                link.setAttribute('target', '_blank');
+                link.style.color = '#000078';
+                link.style.textDecoration = 'underline';
+              });
+              tempDiv.querySelectorAll('ul, ol').forEach(list => {
+                list.style.cssText = 'padding-left:15px; line-height:150%;';
+              });
+              tempDiv.querySelectorAll('h1, h2').forEach(header => {
+                if (header.tagName.toLowerCase() === 'h1') {
+                  header.style.cssText = 'font-size:28px; line-height:26px;';
+                } else if (header.tagName.toLowerCase() === 'h2') {
+                  header.style.cssText = 'font-size:26px; line-height:26px;';
+                }
+              });
+              quill.root.innerHTML = tempDiv.innerHTML;
+              updateHtmlOutput(titleInput.value, 'ca');
+            })
+            .catch(console.error);
         };
         reader.readAsArrayBuffer(event.target.files[0]);
-    });
+      });
 
-    titleInput.addEventListener('input', () => {
+      titleInput.addEventListener('input', () => {
         updateHtmlOutput(titleInput.value, getSelectedLanguage());
-    });
+      });
 
-    document.getElementById('copyCodeBtn').addEventListener('click', () => {
+      document.getElementById('copyCodeBtn').addEventListener('click', () => {
         htmlOutput.select();
         document.execCommand('copy');
-    });
+      });
 
-    const urls = [
-        "https://campus.uoc.edu/estudiant/tramits/ca/index_estudiant.html",
-        "https://campus.uoc.edu/webapps/campus/estudiant/estudiant/incorporacio/es/index_TO.html",
-        "https://campus.uoc.edu/webapps/campus/estudiant/estudiant/incorporacio/es/index_DT.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/documentacio/grau/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/documentacio/formaciopermanent/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/documentacio/doctorat/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/documentacio/altres/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/matricula_grau/index_uoc.html",
-        "https://campus.uoc.edu/estudiant/tramits/es/matricula/matricula_grau/index_incorporacio.html",
-        "https://campus.uoc.edu/estudiant/tramits/es/matricula/matricula_doctorat/index_incorporacio.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/matricula_postgrau/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/matricula_doctorat/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/matricula_altres/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/modificacio_grau/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/modificacio_altres/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/modificacio_doctorat/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/anulacio/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/anulacio_altres/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/preus_grau/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/preus_postgrau/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/preus_doctorat/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/formes_pagament/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/factura/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/recursos/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/beques/Ministeri/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/beques/equitat/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/beques/doctorat/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/descomptes/ajuts_atur/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/beques/erasmus_formacio/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/beques/erasmus_practiques/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/beques/refugees/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/beques/collaboracio/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/beques/randstad/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/descomptes/alumni/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/descomptes/familia_nombrosa/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/descomptes/discapacitats_terrorisme_genere/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/descomptes/violencia_masclista/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/descomptes/matricula_honor/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/descomptes/comunitat_uoc/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/descomptes/conveni_empreses/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/descomptes/ampliacio_matricula/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/mobilitats/deakin/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/mobilitats/ucp/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/mobilitats/pame/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/mobilitats/cinda/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/mobilitats/unad/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/estudis_previs/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/experiencia_professional/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/traspas_MU/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/avaluacio/proves_virtuals/index_covid.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/avaluacio/encavalcaments/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/avaluacio/comprovant/index_covid.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/avaluacio/revisio/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/avaluacio/discapacitat/index_covid.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/avaluacio/dret_examen/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/avaluacio/compensacio/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/avaluacio/com_funcionen_PV/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/avaluacio/publicacio_notes/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/avaluacio/sistema_avaluacio/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/avaluacio/sistema_qualificacions/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/titol/oficials/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/titol/propis/index.html",
-        "https://campus.uoc.edu/webapps/campus/estudiant/estudiant/tramits/ca/certificats/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/certificats/nou_certificat/meus_certificats.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/legalitzacio_documents/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/titol/sistema_universitari/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/titol/com_son/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/certificats/seu_electronica/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/practiques/practiques_curriculars/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/documentacio/grau/paisos_especials.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/matricula_grau/minors/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/matricula_grau/dret_examen/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/matricula_postgrau/competencias_TIC/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/matricula_postgrau/seleccio_optatives/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/matricula/enviament/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/beques/Ministeri/exempcio_uoc.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/estudis_previs/estudis_convalidables/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/estudis_previs/estudis_convalidables/angles.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/estudis_previs/estudis_convalidables/frances.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/estudis_previs/estudis_convalidables/alemany.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/estudis_previs/estudis_convalidables/recaau.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/estudis_previs/introduir_estudis/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/estudis_previs/documentacio/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/estudis_previs/pagament/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/estudis_previs/resultat/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/experiencia_professional/taules/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/convalidacions/experiencia_professional/coetic/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/practiques/practiques_curriculars/GR01.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/practiques/practiques_curriculars/convenis_ccaa/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/treballs_finals/GR01.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/adaptacio_plans/minors/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/adaptacio_plans/minors/minors_generics.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/adaptacio_plans/minors/dret.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/adaptacio_plans/minors/humanitats.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/adaptacio_plans/minors/llengua.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/adaptacio_plans/minors/psicologia.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/adaptacio_plans/minors/informatica.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/doctorat/projecte_tesi/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/doctorat/diposit_tesi/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/doctorat/lectura_tesi/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/doctorat/prorroga/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/acces_estudis/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/adapatacio_necessitats/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/nivell_b2/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/proves_25/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/recon_doble_titulacio/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/adaptacio_plans/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/autoritzacions/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/canvi_idioma/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/canvi_professor/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/canvi_programa/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/doble_titulacioUDA/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/trasllat_expedient/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/solicitud_itinerari/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/solicitud_tutor/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/baixa_doctorat/index.html",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/canvi_programa_doctorat/",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/dedicacio_doctorat/",
-        "https://campus.uoc.edu/estudiant/tramits/ca/altres_tramits/certificats_catala/index.html",
-        "https://campus.uoc.edu/estudiant/espai-personal/ca/index_estudiant.html",
-        "https://campus.uoc.edu/estudiant/espai-personal/ca/meus_pagaments/meus_pagaments.html",
-        "https://campus.uoc.edu/estudiant/espai-personal/ca/meus_pagaments/dades_bancaries.html",
-        "https://campus.uoc.edu/estudiant/espai-personal/ca/carnet/index.html",
-        "https://campus.uoc.edu/estudiant/espai-personal/ca/meus_materials/meus_materials.html",
-        "https://campus.uoc.edu/estudiant/servei_atencio/ca/index.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/index_estudiant.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/universitat/igualtat/index.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/actualitat/noticies/blocs.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/universitat/cooperacio/index.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/universitat/plans/index.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/participa/voluntariat/voluntaris.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/participa/representants/index.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/participa/esports/index.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/participa/associacions/index.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/recursos/recursos_linguistics/index.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/recursos/diversitat_funcional/index.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/recursos/llicencia_office/office.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/recursos/gsuite_seguretat/index.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/recursos/plantilles_marca/index.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/universitat/plans/GR01/index.html",
-        "https://campus.uoc.edu/estudiant/mes-uoc/ca/universitat/plans/Curs25/index.html",
-    ];
-    
-    const urlModal = document.getElementById('urlModal');
-    const urlInput = document.getElementById('urlInput');
-    const autocompleteList = document.getElementById('autocompleteList');
+      // Campus link modal logic
+      const urlModal = document.getElementById('urlModal');
+      const urlInput = document.getElementById('urlInput');
+      const autocompleteList = document.getElementById('autocompleteList');
 
-    document.getElementById('customLinkButton').addEventListener('click', () => {
+      document.getElementById('customLinkButton').addEventListener('click', () => {
         const range = quill.getSelection();
         if (range) {
-            savedRange = range; // Save the current selection range
-            urlModal.style.display = 'block'; // Show the modal
+          savedRange = range;
+          urlModal.style.display = 'block';
         } else {
-            alert('Selecciona el text a enllaçar.');
+          alert('Selecciona el text a enllaçar.');
         }
-    });
+      });
 
-    document.querySelector('.close-button').addEventListener('click', () => {
+      document.querySelector('.close-button').addEventListener('click', () => {
         urlModal.style.display = 'none';
-        restoreSelection(); // Restore the selection when the modal is closed
-    });
+        restoreSelection();
+      });
 
-    window.addEventListener('click', (event) => {
+      window.addEventListener('click', (event) => {
         if (event.target === urlModal) {
-            urlModal.style.display = 'none';
-            restoreSelection(); // Restore the selection when the modal is closed
+          urlModal.style.display = 'none';
+          restoreSelection();
         }
-    });
+      });
 
-    function restoreSelection() {
+      function restoreSelection() {
         if (savedRange) {
-            quill.setSelection(savedRange.index, savedRange.length);
-            savedRange = null; // Clear the saved range
+          quill.setSelection(savedRange.index, savedRange.length);
+          savedRange = null;
         }
-    }
+      }
 
-    urlInput.addEventListener('input', () => {
+      urlInput.addEventListener('input', () => {
         const query = urlInput.value.toLowerCase();
         autocompleteList.innerHTML = '';
         if (query) {
-            const filteredUrls = urls.filter(url => url.toLowerCase().includes(query));
-            filteredUrls.forEach(url => {
+          urls.filter(url => url.toLowerCase().includes(query))
+              .forEach(url => {
                 const item = document.createElement('div');
                 item.textContent = url;
                 item.classList.add('autocomplete-item');
                 item.onclick = () => {
-                    urlInput.value = url;
-                    autocompleteList.innerHTML = '';
+                  urlInput.value = url;
+                  autocompleteList.innerHTML = '';
                 };
                 autocompleteList.appendChild(item);
-            });
+              });
         }
-    });
+      });
 
-    document.getElementById('insertLinkBtn').addEventListener('click', () => {
+      document.getElementById('insertLinkBtn').addEventListener('click', () => {
         let urlInputValue = urlInput.value.trim();
-        const prepend = document.getElementById('prependCheckbox').checked ? 'https://campus.uoc.edu/webapps/cas/login?service=' : '';
-        const secondPrepend = document.getElementById('secondPrependCheckbox').checked ? 'https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm=' : '';
-
-        // Combine the URL components
+        const prepend = document.getElementById('prependCheckbox').checked
+          ? 'https://campus.uoc.edu/webapps/cas/login?service='
+          : '';
+        const secondPrepend = document.getElementById('secondPrependCheckbox').checked
+          ? 'https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm='
+          : '';
         let fullUrl = prepend + secondPrepend + urlInputValue;
-
-        // Add protocol if missing https, so it doesn't default to about:blank bc it thinks it's a relative URL
         if (!/^https?:\/\//i.test(fullUrl)) {
-            fullUrl = 'https://' + fullUrl; // Default to https
+          fullUrl = 'https://' + fullUrl;
         }
-
         if (savedRange && fullUrl) {
-            const linkText = quill.getText(savedRange.index, savedRange.length) || "Link";
-            quill.deleteText(savedRange.index, savedRange.length);
-            quill.insertText(savedRange.index, linkText, 'link', fullUrl);
-            quill.setSelection(savedRange.index + linkText.length);
+          const linkText = quill.getText(savedRange.index, savedRange.length) || "Link";
+          quill.deleteText(savedRange.index, savedRange.length);
+          quill.insertText(savedRange.index, linkText, 'link', fullUrl);
+          quill.setSelection(savedRange.index + linkText.length);
         }
+        urlModal.style.display = 'none';
+      });
 
-        urlModal.style.display = 'none'; // Hide the modal
-    });
+      // Custom Code modal logic using custom embed blot
+      const codeModal = document.getElementById('codeModal');
+      const codeTextInput = document.getElementById('codeTextInput');
+      const codeUrlInput = document.getElementById('codeUrlInput');
+      const codeCloseButton = document.getElementById('codeCloseButton');
+      const insertCodeBtn = document.getElementById('insertCodeBtn');
 
-    document.querySelectorAll('input[name="language"]').forEach(radio => {
-        radio.addEventListener('change', function () {
-            const lang = this.value;
-            updateHtmlOutput(titleInput.value, lang);
+      document.getElementById('customCodeButton').addEventListener('click', () => {
+        const range = quill.getSelection();
+        if (range) {
+          codeSavedRange = range;
+          codeModal.style.display = 'block';
+        } else {
+          alert('Selecciona el lloc on inserir el botó.');
+        }
+      });
+
+      codeCloseButton.addEventListener('click', () => {
+        codeModal.style.display = 'none';
+        restoreCodeSelection();
+      });
+
+      window.addEventListener('click', (event) => {
+        if (event.target === codeModal) {
+          codeModal.style.display = 'none';
+          restoreCodeSelection();
+        }
+      });
+
+      function restoreCodeSelection() {
+        if (codeSavedRange) {
+          quill.setSelection(codeSavedRange.index, codeSavedRange.length);
+          codeSavedRange = null;
+        }
+      }
+
+      // Autocomplete for code modal
+      codeUrlInput.addEventListener('input', () => {
+        const query = codeUrlInput.value.toLowerCase();
+        const codeAutocompleteList = document.getElementById('codeAutocompleteList');
+        codeAutocompleteList.innerHTML = '';
+        if (query) {
+          urls.filter(url => url.toLowerCase().includes(query))
+              .forEach(url => {
+                const item = document.createElement('div');
+                item.textContent = url;
+                item.classList.add('autocomplete-item');
+                item.onclick = () => {
+                  codeUrlInput.value = url;
+                  codeAutocompleteList.innerHTML = '';
+                };
+                codeAutocompleteList.appendChild(item);
+              });
+        }
+      });
+
+      insertCodeBtn.addEventListener('click', () => {
+        const textValue = codeTextInput.value.trim();
+        const urlValue = codeUrlInput.value.trim();
+        if (!textValue || !urlValue) {
+          alert('Si us plau, omple ambdós camps.');
+          return;
+        }
+        // Retrieve checkbox selections for URL prepending in the code modal
+        const codePrepend = document.getElementById('codePrependCheckbox').checked
+          ? 'https://campus.uoc.edu/webapps/cas/login?service='
+          : '';
+        const codeSecondPrepend = document.getElementById('codeSecondPrependCheckbox').checked
+          ? 'https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm='
+          : '';
+        let fullUrl = codePrepend + codeSecondPrepend + urlValue;
+        if (!/^https?:\/\//i.test(fullUrl)) {
+          fullUrl = 'https://' + fullUrl;
+        }
+        const snippet = `<a href="${fullUrl}" target="_blank" style="text-decoration:none;color:#ffffff">
+  <table width="300" border="0" cellspacing="0" cellpadding="4" height="40">
+    <tbody><tr>
+      <td align="center" valign="middle" style="background-color:#000078;color:#ffffff">${textValue}</td>
+    </tr></tbody>
+  </table>
+</a>`;
+        customCodeCounter++;
+        const marker = "CUSTOM_CODE_" + customCodeCounter;
+        customCodeSnippets[marker] = snippet;
+        if (codeSavedRange) {
+          quill.deleteText(codeSavedRange.index, codeSavedRange.length);
+          quill.insertEmbed(codeSavedRange.index, 'customSnippet', { marker: marker, displayText: textValue });
+          quill.setSelection(codeSavedRange.index + 1);
+        }
+        codeModal.style.display = 'none';
+      });
+
+      // YouTube logic using custom embed blot
+      document.getElementById('youtubeButton').addEventListener('click', () => {
+        let youtubeCode = prompt("Introdueix només el codi de YouTube:");
+        if (!youtubeCode) return;
+        youtubeCounter++;
+        const marker = "YOUTUBE_CODE_" + youtubeCounter;
+        const snippet = `<div id="cos" name="cos" style="padding:0;position:relative;background:url(http://img.youtube.com/vi/${youtubeCode}/0.jpg) no-repeat center;background-size:cover;width:540px;height:280px">
+          <div style="background-color:#000078;height:280px;opacity:.6">
+            <a href="http://www.youtube.com/watch?v=${youtubeCode}" target="_blank"><img id="imatge_video" name="imatge_video" src="http://cv.uoc.edu/estudiant/_resources/img/novetats/butlleti/ico-video-blanco-thumb.png" border="0" style="margin-top:110px;margin-left:235px" /></a>
+          </div>
+        </div>
+        <iframe width="540" height="280" frameborder="0" title="Video" id="video-principal" name="video-principal" src="https://www.youtube.com/embed/${youtubeCode}" allowfullscreen style="display:none"></iframe>`;
+        youtubeSnippets[marker] = snippet;
+        const range = quill.getSelection();
+        if (range) {
+          quill.insertEmbed(range.index, 'youtubeSnippet', { marker: marker, displayText: youtubeCode });
+          quill.setSelection(range.index + 1);
+        }
+      });
+
+      // Update output when service or language changes
+      document.querySelectorAll('input[name="service"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+          updateHtmlOutput(titleInput.value, getSelectedLanguage());
         });
+      });
+      document.querySelectorAll('input[name="language"]').forEach(radio => {
+        radio.addEventListener('change', function () {
+          updateHtmlOutput(titleInput.value, this.value);
+        });
+      });
+
+      // Preview functionality
+      document.getElementById('previewButton').addEventListener('click', () => {
+        const htmlContent = htmlOutput.value;
+        const preview = document.getElementById('preview');
+        preview.innerHTML = htmlContent;
+        preview.classList.add('px-2', 'py-3', 'bg-white', 'border');
+      });
     });
-
-    //PREVIEW
-    document.getElementById('previewButton').addEventListener('click', function() {
-        const htmlContent = document.getElementById('htmlOutput').value;
-        document.getElementById('preview').innerHTML = htmlContent;
-        document.getElementById('preview').classList.add('px-2', 'py-3', 'bg-white', 'border');
-    });
-
-});
-
-</script>
-
+  </script>
 </body>
 </html>
