@@ -47,11 +47,11 @@ body {background-color: #f3f1e5;}
 }
 .autocomplete-item:hover {background: #38ff90;}
 #htmlOutput {
-    height: 473px; 
+    height: 465px; 
     width: 100%;
     resize: vertical; 
 }
-#editor {height: 482px;}
+#editor {height: 420px;}
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -82,6 +82,7 @@ body {background-color: #f3f1e5;}
     font-weight: bold;
 }
 #preview a {color: unset;}
+
 .placeholder-boto, .placeholder-youtube {
     background: #eee;
     color: #555;
@@ -90,5 +91,7 @@ body {background-color: #f3f1e5;}
     border: 1px dashed #aaa;
     margin: 5px 0;
 }
-.dropdown-item:active {background-color: transparent;}
+.dropdown-item:active {
+    background-color: transparent;
+}
 .CodeMirror {font-size: 12px;}
