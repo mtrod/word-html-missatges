@@ -6,14 +6,20 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="assets/img/favicon.png">
   <title>Word-a-HTML</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/theme/dracula.min.css">
   <script src="https://cdn.jsdelivr.net/npm/mammoth@1.4.2/mammoth.browser.min.js"></script>
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-  <!-- External files -->
   <script src="assets/js/finalHtmlTemplate.js"></script>
   <script src="assets/js/urls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/htmlmixed/htmlmixed.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/xml/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/css/css.min.js"></script>
   <style></style>
 </head>
 <body>
@@ -32,9 +38,9 @@
         <input class="form-control rounded-0 border font-monospace" type="text" id="titleInput" placeholder="Títol del missatge">
       </div>
     </div>
-    <!-- Editor and toolbar -->
+    <!-- Editor and HTML output in two fixed columns -->
     <div class="row mb-3">
-      <div class="col">
+      <div class="col-md-6">
         <label for="editor" class="form-label fw-bold font-monospace">Previsualització</label>
         <div class="preview-editor p-2 bg-white border">
           <div id="toolbar" class="border mb-2">
@@ -75,7 +81,10 @@
               </svg>
             </button>
             <button id="customCodeButton" style="width: 34px;cursor: pointer;" title="Botó">
-              <svg viewBox="-3 0 24 18" style="background: #444;border: 2px solid white;"><polyline class="ql-stroke" style="stroke:#fff;" points="5.5 13 9 5 12.5 13"></polyline><line class="ql-stroke" x1="11.63" x2="6.38" y1="11" y2="11" style="stroke:#fff;"></line></svg>
+              <svg viewBox="-3 0 24 18" style="background: #444;border: 2px solid white;">
+                <polyline class="ql-stroke" style="stroke:#fff;" points="5.5 13 9 5 12.5 13"></polyline>
+                <line class="ql-stroke" x1="11.63" x2="6.38" y1="11" y2="11" style="stroke:#fff;"></line>
+              </svg>
             </button>
             <a id="customLinkButton" class="btn btn-dark rounded-0 btn-sm btn-customlink">Campus</a>
             <div class="dropdown ql-picker">
@@ -126,8 +135,8 @@
           <div id="editor" class="bg-white border p-2" spellcheck="false"></div>
         </div>
       </div>
-      <div class="col">
-        <!-- Existing Idioma group -->
+      <div class="col-md-6">
+        <!-- HTML output area -->
         <label for="htmlOutput" class="form-label fw-bold font-monospace">HTML</label>
         <textarea id="htmlOutput" class="font-monospace p-2 border rounded-0" placeholder="Sortida HTML editable..." spellcheck="false"></textarea>
         <div class="px-2 pt-2 mt-2 font-monospace bg-white border">
@@ -171,23 +180,22 @@
       <div id="preview"></div>
     </div>
   </div>
-  <!-- Bootstrap 5.3.3 JS bundle (required for dropdown) -->
+  <!-- Bootstrap JS bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Override Quill's default Link format to include underline and blue color
+      // Override Quill's default Link format
       const Link = Quill.import('formats/link');
       const oldCreate = Link.create;
       Link.create = function(value) {
         let node = oldCreate.call(this, value);
-        node.setAttribute('target', '_blank'); // open in a new tab
+        node.setAttribute('target', '_blank');
         node.style.textDecoration = 'underline';
         node.style.color = '#000078';
         return node;
       };
       Quill.register(Link, true);
 
-      // Global storage for custom code snippets (2-field modal) and YouTube snippets
       let customCodeSnippets = {};
       let customCodeCounter = 0;
       let youtubeSnippets = {};
@@ -195,7 +203,7 @@
       let codeSavedRange = null;
       let savedRange = null;
 
-      // Register custom embed blot for custom code snippets
+      // Custom embed blot for code snippet
       const BlockEmbed = Quill.import('blots/block/embed');
       class CustomSnippetBlot extends BlockEmbed {
         static create(value) {
@@ -216,7 +224,7 @@
       CustomSnippetBlot.tagName = 'div';
       Quill.register(CustomSnippetBlot);
 
-      // Register custom embed blot for YouTube snippets
+      // Custom embed blot for youtube snippet
       class YouTubeSnippetBlot extends BlockEmbed {
         static create(value) {
           let node = super.create();
@@ -236,13 +244,13 @@
       YouTubeSnippetBlot.tagName = 'div';
       Quill.register(YouTubeSnippetBlot);
 
-      // Initialize Quill editor
+      // Initialize Quill
       const quill = new Quill('#editor', {
         theme: 'snow',
         modules: { toolbar: '#toolbar' }
       });
 
-      // Dropdown items for inserting parameters
+      // Parameter insertion from dropdown
       document.querySelectorAll('.dropdown-item[data-text]').forEach(item => {
         item.addEventListener('click', event => {
           event.preventDefault();
@@ -262,12 +270,35 @@
         }
       });
 
-      // Helper: Beautify HTML content
+      // Override Quill's default Image format so each inserted image has max-width:100%
+      const Image = Quill.import('formats/image');
+      const originalCreate = Image.create;
+      Image.create = function(value) {
+        const node = originalCreate.call(this, value);
+        node.style.maxWidth = '100%';
+        return node;
+      };
+      Quill.register(Image, true);
+
+      // Add a click listener on the Quill editor’s root element
+      quill.root.addEventListener('click', (event) => {
+        if (event.target && event.target.tagName === 'IMG') {
+          // Find the Quill blot that corresponds to the clicked image
+          const blot = Quill.find(event.target);
+          if (!blot) return;
+          // Get the blot's offset in the editor, then select it
+          const index = blot.offset(quill.scroll);
+          quill.setSelection(index, 1, Quill.sources.USER);
+        }
+      });
+
+
+      // Beautify
       function beautifyEditorContent(html) {
         return html.replace(/>\s*<(?!\/)(?!(?:a|em|i|b|strong|br)\b)/g, '>\n<');
       }
 
-      // Helper: Get service text based on language
+      // Service text helper
       function getServiceText(lang) {
         const service = document.querySelector('input[name="service"]:checked')?.value || 'informacio';
         if (lang === 'ca') {
@@ -281,12 +312,17 @@
         }
       }
 
-      // Modified updateHtmlOutput to replace custom snippet and YouTube snippet placeholders
+      // Update HTML output
       function updateHtmlOutput(title, lang) {
+        // Save scroll/cursor in CodeMirror so it won't jump to top
+        const scrollInfo = htmlEditor.getScrollInfo();
+        const cursor = htmlEditor.getCursor();
+
         let editorContent = quill.root.innerHTML;
         const tempContainer = document.createElement('div');
         tempContainer.innerHTML = editorContent;
-        // Replace custom code snippet placeholders
+
+        // Replace placeholders
         tempContainer.querySelectorAll('.placeholder-boto').forEach(el => {
           const marker = el.getAttribute('data-marker');
           const snippet = customCodeSnippets[marker];
@@ -294,7 +330,6 @@
             el.outerHTML = snippet;
           }
         });
-        // Replace YouTube snippet placeholders
         tempContainer.querySelectorAll('.placeholder-youtube').forEach(el => {
           const marker = el.getAttribute('data-marker');
           const snippet = youtubeSnippets[marker];
@@ -302,6 +337,7 @@
             el.outerHTML = snippet;
           }
         });
+
         const beautifiedContent = beautifyEditorContent(tempContainer.innerHTML);
         const serviceText = getServiceText(lang);
         const languageSnippets = {
@@ -310,11 +346,16 @@
           en: `The ${serviceText} email address is used only to send out messages. Should you have any doubts, please consult the Help Service on the Virtual Campus.<br>You are currently receiving messages in English. You can change this whenever you want in your <em><a style="color: #000078; text-decoration: underline;" href="https://campus.uoc.edu/webapps/cas/login?service=https://campus.uoc.edu/UOC/a/varis/miss_informacio/js/FinestraCampus.html%3Fhtm=https://campus.uoc.edu/estudiant/espai-personal/en/index.html" target="_blank">Personal area / Personal information / Change the language for messages</a></em> section.`,
           no: ``
         };
+
         if (lang === 'no') {
-          htmlOutput.value = beautifiedContent;
+          htmlEditor.setValue(beautifiedContent);
         } else {
-          htmlOutput.value = getFinalHtmlTemplate(title, lang, beautifiedContent, languageSnippets);
+          htmlEditor.setValue(getFinalHtmlTemplate(title, lang, beautifiedContent, languageSnippets));
         }
+
+        // Restore scroll and cursor
+        htmlEditor.scrollTo(scrollInfo.left, scrollInfo.top);
+        htmlEditor.setCursor(cursor);
       }
 
       function getSelectedLanguage() {
@@ -324,10 +365,23 @@
       const titleInput = document.getElementById('titleInput');
       const htmlOutput = document.getElementById('htmlOutput');
 
+      // Initialize CodeMirror
+      const htmlEditor = CodeMirror.fromTextArea(htmlOutput, {
+        mode: "htmlmixed",
+        theme: "dracula",
+        lineNumbers: true,
+        readOnly: false,
+        lineWrapping: true,
+        smartIndent: false
+      });
+      htmlEditor.setSize("100%", "440px");
+
+      // Listen to Quill changes
       quill.on('text-change', () => {
         updateHtmlOutput(titleInput.value, getSelectedLanguage());
       });
 
+      // Handle file input
       document.getElementById('fileInput').addEventListener('change', (event) => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -335,6 +389,8 @@
             .then(result => {
               const tempDiv = document.createElement('div');
               tempDiv.innerHTML = result.value;
+
+              // Basic style tweaks
               tempDiv.querySelectorAll('a').forEach(link => {
                 link.setAttribute('target', '_blank');
                 link.style.color = '#000078';
@@ -350,6 +406,8 @@
                   header.style.cssText = 'font-size:26px; line-height:26px;';
                 }
               });
+
+              // Put the result into Quill
               quill.root.innerHTML = tempDiv.innerHTML;
               updateHtmlOutput(titleInput.value, 'ca');
             })
@@ -358,16 +416,17 @@
         reader.readAsArrayBuffer(event.target.files[0]);
       });
 
+      // Title changes
       titleInput.addEventListener('input', () => {
         updateHtmlOutput(titleInput.value, getSelectedLanguage());
       });
 
+      // Copy code
       document.getElementById('copyCodeBtn').addEventListener('click', () => {
-        htmlOutput.select();
-        document.execCommand('copy');
+        navigator.clipboard.writeText(htmlEditor.getValue());
       });
 
-      // Campus link modal logic
+      // Link modal
       const urlModal = document.getElementById('urlModal');
       const urlInput = document.getElementById('urlInput');
       const autocompleteList = document.getElementById('autocompleteList');
@@ -440,7 +499,7 @@
         urlModal.style.display = 'none';
       });
 
-      // Custom Code modal logic using custom embed blot
+      // Custom code modal
       const codeModal = document.getElementById('codeModal');
       const codeTextInput = document.getElementById('codeTextInput');
       const codeUrlInput = document.getElementById('codeUrlInput');
@@ -476,7 +535,6 @@
         }
       }
 
-      // Autocomplete for code modal
       codeUrlInput.addEventListener('input', () => {
         const query = codeUrlInput.value.toLowerCase();
         const codeAutocompleteList = document.getElementById('codeAutocompleteList');
@@ -503,7 +561,6 @@
           alert('Si us plau, omple ambdós camps.');
           return;
         }
-        // Retrieve checkbox selections for URL prepending in the code modal
         const codePrepend = document.getElementById('codePrependCheckbox').checked
           ? 'https://campus.uoc.edu/webapps/cas/login?service='
           : '';
@@ -532,7 +589,7 @@
         codeModal.style.display = 'none';
       });
 
-      // YouTube logic using custom embed blot
+      // YouTube snippet
       document.getElementById('youtubeButton').addEventListener('click', () => {
         let youtubeCode = prompt("Introdueix només el codi de YouTube:");
         if (!youtubeCode) return;
@@ -552,7 +609,7 @@
         }
       });
 
-      // Update output when service or language changes
+      // Service & language changes
       document.querySelectorAll('input[name="service"]').forEach(radio => {
         radio.addEventListener('change', () => {
           updateHtmlOutput(titleInput.value, getSelectedLanguage());
@@ -564,9 +621,9 @@
         });
       });
 
-      // Preview functionality
+      // Preview
       document.getElementById('previewButton').addEventListener('click', () => {
-        const htmlContent = htmlOutput.value;
+        const htmlContent = htmlEditor.getValue();
         const preview = document.getElementById('preview');
         preview.innerHTML = htmlContent;
         preview.classList.add('px-2', 'py-3', 'bg-white', 'border');
