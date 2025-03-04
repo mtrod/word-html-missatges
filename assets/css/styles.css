@@ -47,7 +47,7 @@ body {background-color: #f3f1e5;}
 }
 .autocomplete-item:hover {background: #38ff90;}
 #htmlOutput {
-    height: 465px; 
+    height: 473px; 
     width: 100%;
     resize: vertical; 
 }
