@@ -95,3 +95,29 @@ body {background-color: #f3f1e5;}
     background-color: transparent;
 }
 .CodeMirror {font-size: 12px;}
+.ui-autocomplete {
+      position: absolute;
+      z-index: 1000;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 2px;
+      list-style: none;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      max-height: 120px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      font-family: monospace;
+      font-size: .85rem;
+}
+.ui-menu-item-wrapper {
+  padding: 5px 12px;
+}
+.ui-menu-item .ui-menu-item-wrapper.ui-state-active {
+      background-color: #38ff90;
+}
+
+.ui-helper-hidden-accessible { display: none; }
+li.ui-menu-item a { display: block; }
