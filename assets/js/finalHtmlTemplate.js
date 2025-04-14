@@ -1,4 +1,4 @@
-function getFinalHtmlTemplate(title, lang, content, languageSnippets) {
+function getFinalHtmlTemplate(title, lang, content, languageSnippets, analyticsOutput) {
   return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="${lang}">
   <head>
@@ -68,7 +68,7 @@ ${content}
         </tr>
       </table>
     </div>
-    <img src="https://queue.simpleanalyticscdn.com/noscript.gif?timezone=Europe%2FAmsterdam&unique=false&hostname=cv.uoc.edu&path=&utm_campaign=&utm_content=[OBTENERPARAMETROUNODEST]&utm_medium=notificador&https=true" referrerpolicy="no-referrer-when-downgrade" alt="" />
-  </body>
+    ${analyticsOutput}
+      </body>
 </html>`;
 }
