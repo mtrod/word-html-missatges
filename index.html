@@ -20,6 +20,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/xml/xml.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/javascript/javascript.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/css/css.min.js"></script>
+  <!-- Include jQuery and jQuery UI for autocomplete on the analytics fields -->
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <style></style>
 </head>
 <body>
@@ -133,6 +136,29 @@
             </div>
           </div>
           <div id="editor" class="bg-white border p-2" spellcheck="false"></div>
+        </div>
+        <!-- New Analytics Snippet Fields added below the Quill editor -->
+        <div id="row-snippet" class="form-group p-2 mt-2 font-monospace bg-white border">
+          <label class="form-label fw-bold">Marcatge Analytics</label>
+          <div class="col-12">
+            <div class="row">
+              <div class="col">
+                <input id="fill-placom" type="text" class="form-control rounded-0 p-1 border font-monospace" placeholder="Placom" autocomplete="off">
+              </div>
+              <div class="col">
+                <input id="fill-collectiu" type="text" class="form-control rounded-0 p-1 border font-monospace" placeholder="Col·lectiu" autocomplete="off">
+              </div>
+              <div class="col">
+                <input id="fill-identificatiu" type="text" class="form-control rounded-0 p-1 border font-monospace" placeholder="Text" autocomplete="off">
+              </div>
+              <div class="col">
+                <input id="fill-date" type="text" class="form-control rounded-0 p-1 border font-monospace" placeholder="Data" autocomplete="off">
+              </div>
+              <div class="col">
+                <input id="fill-campaign" type="text" class="form-control rounded-0 p-1 border font-monospace" placeholder="Campaign" autocomplete="off">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="col-md-6">
@@ -292,7 +318,6 @@
         }
       });
 
-
       // Beautify
       function beautifyEditorContent(html) {
         return html.replace(/>\s*<(?!\/)(?!(?:a|em|i|b|strong|br)\b)/g, '>\n<');
@@ -347,10 +372,31 @@
           no: ``
         };
 
+        // Build the analytics snippet from the new fields:
+        var placom = document.getElementById("fill-placom") ? document.getElementById("fill-placom").value.trim() : "";
+        var collectiu = document.getElementById("fill-collectiu") ? document.getElementById("fill-collectiu").value.trim() : "";
+        var identificatiu = document.getElementById("fill-identificatiu") ? document.getElementById("fill-identificatiu").value.trim() : "";
+        var dateVal = document.getElementById("fill-date") ? document.getElementById("fill-date").value.trim() : "";
+        var campaign = document.getElementById("fill-campaign") ? document.getElementById("fill-campaign").value.trim() : "";
+        var analyticsOutput = "";
+        if (placom || collectiu || identificatiu || dateVal) {
+          var pathStr = "/email" +
+              (placom ? "/" + placom : "") +
+              (collectiu ? "/" + collectiu : "") +
+              (identificatiu ? "/" + identificatiu : "") +
+              (dateVal ? "/" + dateVal : "") +
+              ".html";
+          analyticsOutput = '<img src="https://queue.simpleanalyticscdn.com/noscript.gif?timezone=Europe%2FAmsterdam&unique=false' +
+              '&hostname=cv.uoc.edu&path=' + encodeURI(pathStr) +
+              (campaign ? '&utm_campaign=' + campaign : '') +
+              '&utm_content=[OBTENERPARAMETROUNODEST]&utm_medium=notificador&https=true" ' +
+              'referrerpolicy="no-referrer-when-downgrade" alt="" />';
+        }
+
         if (lang === 'no') {
           htmlEditor.setValue(beautifiedContent);
         } else {
-          htmlEditor.setValue(getFinalHtmlTemplate(title, lang, beautifiedContent, languageSnippets));
+          htmlEditor.setValue(getFinalHtmlTemplate(title, lang, beautifiedContent, languageSnippets, analyticsOutput));
         }
 
         // Restore scroll and cursor
@@ -374,11 +420,18 @@
         lineWrapping: true,
         smartIndent: false
       });
-      htmlEditor.setSize("100%", "440px");
+      htmlEditor.setSize("100%", "500px");
 
       // Listen to Quill changes
       quill.on('text-change', () => {
         updateHtmlOutput(titleInput.value, getSelectedLanguage());
+      });
+
+      // Automatically update analytics snippet when analytics input fields change
+      $(function() {
+        $('#fill-placom, #fill-collectiu, #fill-identificatiu, #fill-date, #fill-campaign').on('input change', function() {
+          updateHtmlOutput(titleInput.value, getSelectedLanguage());
+        });
       });
 
       // Handle file input
@@ -628,6 +681,62 @@
         preview.innerHTML = htmlContent;
         preview.classList.add('px-2', 'py-3', 'bg-white', 'border');
       });
+    });
+
+    // Initialize jQuery UI Autocomplete for the analytics snippet fields
+    $(function() {
+      var placomList = [
+        "_ad_",
+        "_butlletins_actualitat_",
+        "_CANVAS_",
+        "_lms_",
+        "_ocupabilitat_",
+        "_fira_ocupabilitat_",
+        "_FP_PS_",
+        "_graduacio_",
+        "_PAF_",
+        "_plans_",
+        "_eleccions_"
+      ];
+      $("#fill-placom").autocomplete({
+  source: placomList,
+  minLength: 0,
+  select: function(event, ui) {
+    $(this).val(ui.item.value).trigger("change");
+  }
+}).focus(function() {
+  $(this).autocomplete("search", "");
+});
+
+      
+      var collectiuList = ["estudiant", "pdc", "pra", "tutor"];
+      $("#fill-collectiu").autocomplete({
+        source: collectiuList,
+        minLength: 0,
+        select: function(event, ui) {
+    $(this).val(ui.item.value).trigger("change");
+  }
+}).focus(function() {
+  $(this).autocomplete("search", "");
+});
+      
+      var campaigns = ["povspaf", "butlletins_actualitat", "butlletiacollida", "lms"];
+      $("#fill-campaign").autocomplete({
+        source: campaigns,
+        minLength: 0,
+        select: function(event, ui) {
+    $(this).val(ui.item.value).trigger("change");
+  }
+}).focus(function() {
+  $(this).autocomplete("search", "");
+});
+
+      // Pre-fill the date field with the current date in YYYYMMDD format
+      const today = new Date();
+      const yyyy = today.getFullYear().toString();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      document.getElementById('fill-date').value = yyyy + mm + dd;
     });
   </script>
 </body>
