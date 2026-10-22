@@ -329,11 +329,11 @@
       function getServiceText(lang) {
         const service = document.querySelector('input[name="service"]:checked')?.value || 'informacio';
         if (lang === 'ca') {
-          return service === 'informacio' ? "del Servei d'informació" : "de Suport Docència";
+          return service === 'informacio' ? "del servei d'informació" : "de Suport Docència";
         } else if (lang === 'es') {
-          return service === 'informacio' ? "del Servicio de información" : "de Apoyo Docente";
+          return service === 'informacio' ? "del servicio de información" : "de Apoyo Docente";
         } else if (lang === 'en') {
-          return service === 'informacio' ? "Information Service" : "Teaching Support";
+          return service === 'informacio' ? "information service" : "Teaching Support";
         } else {
           return "";
         }
